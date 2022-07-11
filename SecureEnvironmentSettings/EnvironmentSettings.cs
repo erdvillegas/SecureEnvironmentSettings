@@ -17,6 +17,127 @@ namespace SecureEnvironmentSettings
         private const string currentEnvironmentKey = "CurrentEnvironment";
 
         /// <summary>
+        /// Provider to encrypt config sections
+        /// </summary>
+        private const string protectionProvider = "DataProtectionConfigurationProvider";
+
+        #region EncryptDecrypt
+
+        /// <summary>
+        /// Encrypt the connection string and secureSections
+        /// </summary>
+        /// <example language="xml">
+        /// <code>
+        /// <configSections>
+        ///     <section name = "secureConfig" type="System.Configuration.AppSettingsSection"/>
+        /// </configSections>
+        /// 
+        /// <Production>
+        ///     <add key="url" value="https://femsa.csod.com"/>
+        /// </Production>
+        /// 
+        /// </code>
+        /// </example>   
+        public static void Encrypt()
+        {
+            try
+            {
+                Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+
+                //Encrypt connectionStrings
+                ConnectionStringsSection sectionConnectionStrings = config.GetSection("connectionStrings") as ConnectionStringsSection;
+                if (!sectionConnectionStrings.SectionInformation.IsProtected)
+                    sectionConnectionStrings.SectionInformation.ProtectSection(protectionProvider);
+
+                //Encrypt configuration Section
+                AppSettingsSection secureConfigSecction = config.GetSection("secureConfig") as AppSettingsSection;
+                if (!secureConfigSecction.SectionInformation.IsProtected)
+                    secureConfigSecction.SectionInformation.ProtectSection(protectionProvider);
+
+                config.Save();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"An errro ocurre during encrypting section \n{e.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Decrypt the config file
+        /// </summary>
+        public static void Decrypt()
+        {
+            try
+            {
+                Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+
+                //Encrypt connectionStrings
+                ConnectionStringsSection sectionConnectionStrings = config.GetSection("connectionStrings") as ConnectionStringsSection;
+                if (sectionConnectionStrings.SectionInformation.IsProtected)
+                    sectionConnectionStrings.SectionInformation.UnprotectSection();
+
+                //Encrypt configuration Section
+                AppSettingsSection secureConfigSecction = config.GetSection("secureConfig") as AppSettingsSection;
+                if (secureConfigSecction.SectionInformation.IsProtected)
+                    secureConfigSecction.SectionInformation.UnprotectSection();
+
+                config.Save();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"An errro ocurre during encrypting section \n{e.Message}");
+            }
+        }
+
+
+        /// <summary>
+        /// Update config values
+        /// </summary>
+        /// <param name="key">key</param>
+        /// <param name="value">value</param>
+        public static void UpdateConfiguracion(string key, string value)
+        {
+            KeyValueConfigurationCollection _settings = null;
+
+            try
+            {
+                Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                AppSettingsSection secureConfigSecction = config.GetSection("secureConfig") as AppSettingsSection;
+
+                if (secureConfigSecction.SectionInformation.IsProtected)
+                {
+                    secureConfigSecction.SectionInformation.UnprotectSection();
+                }
+
+                _settings = secureConfigSecction.Settings;
+                if (_settings[key] != null)
+                {
+                    _settings[key].Value = value;
+                }
+                else
+                {
+                    _settings.Add(key, value);
+                }
+
+                config.Save(ConfigurationSaveMode.Full, true);
+            }
+            catch (Exception e)
+            {
+                //Console.WriteLine("No se pudieron obtener las credenciales del usuario para el MWS");
+                Console.WriteLine(e.Message);
+
+            }
+            finally
+            {
+                Encrypt();
+            }
+        }
+
+        #endregion
+
+        #region EnvironmentVariables
+
+        /// <summary>
         /// current working environemtn
         /// </summary>
         /// <example language="xml">
@@ -46,6 +167,8 @@ namespace SecureEnvironmentSettings
                 return CurrentSettings;
             }
         }
+
+        #endregion
 
         #region ConnectionStrings
 
