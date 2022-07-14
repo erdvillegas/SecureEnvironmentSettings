@@ -4,17 +4,150 @@ using System.Configuration;
 
 namespace SecureEnvironmentSettings
 {
-    public class EnvironmentSettings
+    public static class SecureEnvironmentSettings
     {
+        #region Labels
+
         /// <summary>
         /// Environment settings section Name label
         /// </summary>
-        private const string EnvironmentSettingSectionName = "EnvironmentSettings";
+        private const string EnvironmentSectionGroupName = "EnvironmentSettings";
 
         /// <summary>
         /// Current environment label
         /// </summary>
         private const string currentEnvironmentKey = "CurrentEnvironment";
+
+        /// <summary>
+        /// Provider to encrypt config sections
+        /// </summary>
+        private const string protectionProvider = "DataProtectionConfigurationProvider";
+
+        #endregion
+
+        #region EncryptDecrypt
+
+        /// <summary>
+        /// Encrypt the connection string and secureSections
+        /// </summary>
+        /// <example language="xml">
+        /// <code>
+        /// <configSections>
+        ///     <section name = "secureConfig" type="System.Configuration.AppSettingsSection"/>
+        /// </configSections>
+        /// 
+        /// <Production>
+        ///     <add key="url" value="https://femsa.csod.com"/>
+        /// </Production>
+        /// 
+        /// </code>
+        /// </example>   
+        public static void Encrypt()
+        {
+            try
+            {
+                // Get the application configuration file.
+                Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+
+                //Encrypt connectionStrings
+                ConnectionStringsSection sectionConnectionStrings = config.GetSection("connectionStrings") as ConnectionStringsSection;
+                if (!sectionConnectionStrings.SectionInformation.IsProtected)
+                    sectionConnectionStrings.SectionInformation.ProtectSection(protectionProvider);
+
+                //Get every section from EnvironmentSettings and protect
+                ConfigurationSectionGroup group = config.SectionGroups[EnvironmentSectionGroupName];
+                foreach (ConfigurationSection section in group.Sections)
+                {
+                    if (!section.SectionInformation.IsProtected)
+                    {
+                        section.SectionInformation.ProtectSection(protectionProvider);
+                    }
+                }
+
+                config.Save();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"An errro ocurre during encrypting section \n{e.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Decrypt the config file
+        /// </summary>
+        public static void Decrypt()
+        {
+            try
+            {
+                Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+
+                //Encrypt connectionStrings
+                ConnectionStringsSection sectionConnectionStrings = config.GetSection("connectionStrings") as ConnectionStringsSection;
+                if (sectionConnectionStrings.SectionInformation.IsProtected)
+                    sectionConnectionStrings.SectionInformation.UnprotectSection();
+
+                //Get every section from EnvironmentSettings and unprotect
+                ConfigurationSectionGroup group = config.SectionGroups[EnvironmentSectionGroupName];
+                foreach (ConfigurationSection section in group.Sections)
+                {
+                    if (section.SectionInformation.IsProtected)
+                    {
+                        section.SectionInformation.UnprotectSection();
+                    }
+                }
+
+                config.Save();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"An errro ocurre during decrypt section \n{e.Message}");
+            }
+        }
+
+
+        /// <summary>
+        /// Update config values
+        /// </summary>
+        /// <param name="key">key</param>
+        /// <param name="value">value</param>
+        public static void UpdateConfiguracion(string key, string value)
+        {
+            try
+            {
+                Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                AppSettingsSection secureConfigSecction = config.GetSection(CurrentEnvironent) as AppSettingsSection;
+
+                if (secureConfigSecction.SectionInformation.IsProtected)
+                {
+                    secureConfigSecction.SectionInformation.UnprotectSection();
+                }
+
+                KeyValueConfigurationCollection _settings = secureConfigSecction.Settings;
+                if (_settings[key] != null)
+                {
+                    _settings[key].Value = value;
+                }
+                else
+                {
+                    _settings.Add(key, value);
+                }
+
+                config.Save(ConfigurationSaveMode.Full, true);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+
+            }
+            finally
+            {
+                Encrypt();
+            }
+        }
+
+        #endregion
+
+        #region EnvironmentVariables
 
         /// <summary>
         /// current working environemtn
@@ -37,15 +170,32 @@ namespace SecureEnvironmentSettings
         /// <summary>
         /// Get access to all environmentSettings according to <seealso cref="CurrentEnvironent"/>
         /// </summary>
-        public static NameValueCollection Settings
+        public static KeyValueConfigurationCollection Settings
         {
             get
             {
-                NameValueCollection CurrentSettings = (NameValueCollection)
-                    ConfigurationManager.GetSection(EnvironmentSettingSectionName + "/" + CurrentEnvironent);
-                return CurrentSettings;
+                KeyValueConfigurationCollection _settings = null;
+                try
+                {
+                    Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+
+                    AppSettingsSection secureConfigSecction = config.GetSection(EnvironmentSectionGroupName + "/" + CurrentEnvironent) as AppSettingsSection;
+                    if (secureConfigSecction.SectionInformation.IsProtected)
+                        secureConfigSecction.SectionInformation.UnprotectSection();
+
+                    _settings = secureConfigSecction.Settings;
+                    if (!secureConfigSecction.SectionInformation.IsProtected)
+                        secureConfigSecction.SectionInformation.ProtectSection(protectionProvider);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+                return _settings;
             }
         }
+
+        #endregion
 
         #region ConnectionStrings
 
@@ -66,16 +216,15 @@ namespace SecureEnvironmentSettings
                 ConnectionStringsSection section = config.GetSection("connectionStrings") as ConnectionStringsSection;
 
                 if (section.SectionInformation.IsProtected)
-                {
                     section.SectionInformation.UnprotectSection();
-                }
+
                 connectionString = section.ConnectionStrings[name].ToString();
 
-                section.SectionInformation.ProtectSection("DataProtectionConfigurationProvider");
+                if (!section.SectionInformation.IsProtected)
+                    section.SectionInformation.ProtectSection(protectionProvider);
             }
             catch (Exception e)
             {
-                //TODO: Change Message
                 Console.WriteLine(e.Message);
             }
             return connectionString;
@@ -92,11 +241,13 @@ namespace SecureEnvironmentSettings
             if (string.IsNullOrEmpty(Environment))
                 Environment = CurrentEnvironent;
 
-            NameValueCollection config = (NameValueCollection)
-                ConfigurationManager.GetSection(EnvironmentSettingSectionName + "/" + Environment);
+            Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            AppSettingsSection secureConfigSecction = config.GetSection(EnvironmentSectionGroupName + "/" + Environment) as AppSettingsSection;
 
-            ConnectionStringSettings connectionString = (ConnectionStringSettings)
-                ConfigurationManager.ConnectionStrings[config[name]];
+            if (secureConfigSecction.SectionInformation.IsProtected)
+                secureConfigSecction.SectionInformation.UnprotectSection();
+
+            ConnectionStringSettings connectionString = (ConnectionStringSettings)ConfigurationManager.ConnectionStrings[secureConfigSecction.Settings[name].Value];
 
             return connectionString;
         }
@@ -126,9 +277,25 @@ namespace SecureEnvironmentSettings
             if (string.IsNullOrEmpty(Environment))
                 Environment = CurrentEnvironent;
 
-            NameValueCollection config = (NameValueCollection)
-                ConfigurationManager.GetSection(EnvironmentSettingSectionName + "/" + Environment);
-            return config[Key].ToString();
+            KeyValueConfigurationCollection _settings = null;
+            try
+            {
+                Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+
+                AppSettingsSection secureConfigSecction = config.GetSection(EnvironmentSectionGroupName + "/" + Environment) as AppSettingsSection;
+                if (secureConfigSecction.SectionInformation.IsProtected)
+                    secureConfigSecction.SectionInformation.UnprotectSection();
+
+                _settings = secureConfigSecction.Settings;
+                if (!secureConfigSecction.SectionInformation.IsProtected)
+                    secureConfigSecction.SectionInformation.ProtectSection(protectionProvider);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"There where an issue while getting the value: {e.Message}");
+            }
+
+            return _settings[Key].Value;
         }
 
         #endregion
