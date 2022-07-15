@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Specialized;
 using System.Configuration;
+using System.Linq;
+using System.Collections;
 
 namespace SecureEnvironmentSettings
 {
@@ -68,7 +70,7 @@ namespace SecureEnvironmentSettings
             }
             catch (Exception e)
             {
-                Console.WriteLine($"An errro ocurre during encrypting section \n{e.Message}");
+                Console.WriteLine($"An errror ocurring during encrypting section \n{e.Message}");
             }
         }
 
@@ -104,6 +106,30 @@ namespace SecureEnvironmentSettings
             }
         }
 
+        public static bool IsEncrypted()
+        {
+
+            // Get the application configuration file.
+            Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            ConfigurationSectionGroup group = config.SectionGroups[EnvironmentSectionGroupName];
+
+            //Get every section from EnvironmentSettings and protect
+
+            bool[] isEncrypted = new bool[group.Sections.Count + 1];
+
+            int i = 0;
+            foreach (ConfigurationSection section in group.Sections)
+            {
+                isEncrypted[i] = section.SectionInformation.IsProtected;
+                i++;
+            }
+
+            //Encrypt connectionStrings
+            ConnectionStringsSection sectionConnectionStrings = config.GetSection("connectionStrings") as ConnectionStringsSection;
+            isEncrypted[i] = sectionConnectionStrings.SectionInformation.IsProtected;
+
+            return isEncrypted.All(e => e == true);
+        }
 
         /// <summary>
         /// Update config values
@@ -247,7 +273,7 @@ namespace SecureEnvironmentSettings
             if (secureConfigSecction.SectionInformation.IsProtected)
                 secureConfigSecction.SectionInformation.UnprotectSection();
 
-            ConnectionStringSettings connectionString = (ConnectionStringSettings)ConfigurationManager.ConnectionStrings[secureConfigSecction.Settings[name].Value];
+                ConnectionStringSettings connectionString = (ConnectionStringSettings)ConfigurationManager.ConnectionStrings[secureConfigSecction.Settings[name].Value];
 
             return connectionString;
         }
@@ -292,7 +318,7 @@ namespace SecureEnvironmentSettings
             }
             catch (Exception e)
             {
-                Console.WriteLine($"There where an issue while getting the value: {e.Message}");
+                Console.WriteLine($"There was an issue while getting the value: {e.Message}");
             }
 
             return _settings[Key].Value;

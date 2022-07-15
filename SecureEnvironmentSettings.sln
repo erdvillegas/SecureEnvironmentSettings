@@ -5,6 +5,8 @@ VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SecureEnvironmentSettings", "SecureEnvironmentSettings\SecureEnvironmentSettings.csproj", "{597C3B65-8E50-4AA5-9823-F86A98D28119}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SecureEnvironmentSettings.Testing", "SecureEnvironmentSettings.Testing\SecureEnvironmentSettings.Testing.csproj", "{AF32D2DB-D0C9-4595-B055-8A2B1D8125C0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{597C3B65-8E50-4AA5-9823-F86A98D28119}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{597C3B65-8E50-4AA5-9823-F86A98D28119}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{597C3B65-8E50-4AA5-9823-F86A98D28119}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF32D2DB-D0C9-4595-B055-8A2B1D8125C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF32D2DB-D0C9-4595-B055-8A2B1D8125C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF32D2DB-D0C9-4595-B055-8A2B1D8125C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF32D2DB-D0C9-4595-B055-8A2B1D8125C0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
