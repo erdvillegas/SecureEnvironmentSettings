@@ -65,6 +65,18 @@ namespace SecureEnvironmentSettings.Testing
         }
 
         [TestMethod]
+        [TestCategory("EnvironmentSettings")]
+        public void TestUpdateConfiguracion()
+        {
+            string expected = "TestValueUpdated";
+            SecureEnvironmentSettings.UpdateConfiguracion("TestKey", expected, "QA");
+
+            //string wanted = SecureEnvironmentSettings.Settings["TestKey"].Value;
+            string wanted = SecureEnvironmentSettings.GetKeyByEnvironment("TestKey", "QA");
+            Assert.IsTrue(expected.Equals(wanted,StringComparison.InvariantCultureIgnoreCase));
+        }
+
+        [TestMethod]
         [TestCategory("ConnectionStrings")]
         public void TestGetConnectionStrings()
         {

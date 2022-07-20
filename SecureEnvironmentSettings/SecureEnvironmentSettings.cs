@@ -168,7 +168,6 @@ namespace SecureEnvironmentSettings
         /// </example>
         public static bool IsEncrypted()
         {
-
             // Get the application configuration file.
             Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
             ConfigurationSectionGroup group = config.SectionGroups[EnvironmentSectionGroupName];
@@ -196,13 +195,17 @@ namespace SecureEnvironmentSettings
         /// </summary>
         /// <param name="key">key</param>
         /// <param name="value">value</param>
-        ///TODO: Add a seccond method to update based on the environment
-        public static void UpdateConfiguracion(string key, string value)
+        public static void UpdateConfiguracion(string key, string value, string environment)
         {
             try
             {
+                if (string.IsNullOrEmpty(environment))
+                    environment = CurrentEnvironent;
+
+                string section = $"{EnvironmentSectionGroupName}/{environment}";
+
                 Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-                AppSettingsSection secureConfigSecction = config.GetSection(CurrentEnvironent) as AppSettingsSection;
+                AppSettingsSection secureConfigSecction = config.GetSection(section) as AppSettingsSection;
 
                 if (secureConfigSecction.SectionInformation.IsProtected)
                 {
@@ -220,6 +223,7 @@ namespace SecureEnvironmentSettings
                 }
 
                 config.Save(ConfigurationSaveMode.Full, true);
+                ConfigurationManager.RefreshSection(section);
             }
             catch (Exception e)
             {
@@ -415,7 +419,7 @@ namespace SecureEnvironmentSettings
             if (secureConfigSecction.SectionInformation.IsProtected)
                 secureConfigSecction.SectionInformation.UnprotectSection();
 
-                ConnectionStringSettings connectionString = (ConnectionStringSettings)ConfigurationManager.ConnectionStrings[secureConfigSecction.Settings[name].Value];
+            ConnectionStringSettings connectionString = (ConnectionStringSettings)ConfigurationManager.ConnectionStrings[secureConfigSecction.Settings[name].Value];
 
             return connectionString;
         }
