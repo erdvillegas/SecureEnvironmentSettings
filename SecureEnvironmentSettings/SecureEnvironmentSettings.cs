@@ -1,18 +1,61 @@
 ﻿using System;
-using System.Collections.Specialized;
 using System.Configuration;
 using System.Linq;
-using System.Collections;
 
 namespace SecureEnvironmentSettings
 {
+    /// <summary>
+    /// Library to handle config files based on environment
+    /// </summary>
     public static class SecureEnvironmentSettings
     {
         #region Labels
 
         /// <summary>
-        /// Environment settings section Name label
+        /// Environment settings section Name label.
+        /// You can set your config parameters based on your environment and keep it secure, when you need to change all your parameters, 
+        /// you can change a configuration environment , CurrentEnvironment
+        /// The following example show how you need to setup your main app config file, also how to split on different files
         /// </summary>
+        /// <example>
+        /// <codelanguage="xml" title="app.config">
+        /// <![CDATA[
+        /// <?xml version = "1.0" encoding="utf-8" ?>
+        /// <configuration>
+        /// <configSections>
+        ///     <sectionGroup name = "EnvironmentSettings" type="System.Configuration.ApplicationSettingsGroup">
+        ///	        <section name = "Production" type="System.Configuration.AppSettingsSection"/>
+        ///	        <section name = "Development" type="System.Configuration.AppSettingsSection"/>
+        ///	        <section name = "QA" type="System.Configuration.AppSettingsSection"/>
+        ///     </sectionGroup>
+        /// </configSections>
+        /// <connectionStrings>
+        ///     <add name = "MovieDBContextPrd"
+        ///     connectionString="Data Source=(LocalDb)\MSSQLLocalDB;Initial Catalog=aspnet-MvcMovie;Integrated Security=SSPI;AttachDBFilename=|DataDirectory|\MoviesPrd.mdf"
+        ///     providerName="System.Data.SqlClient">
+        ///     <add name = "MovieDBContextDev"
+        ///     connectionString="Data Source=(LocalDb)\MSSQLLocalDB;Initial Catalog=aspnet-MvcMovie;Integrated Security=SSPI;AttachDBFilename=|DataDirectory|\MoviesDev.mdf"
+        ///     providerName="System.Data.SqlClient">
+        ///    <add name = "MovieDBContextQA"
+        ///     connectionString="Data Source=(LocalDb)\MSSQLLocalDB;Initial Catalog=aspnet-MvcMovie;Integrated Security=SSPI;AttachDBFilename=|DataDirectory|\MoviesQA.mdf"
+        ///     providerName="System.Data.SqlClient">
+        /// </connectionStrings>
+        /// <EnvironmentSettings>
+        ///     <Production file = "Config\Production.config" ></ Production >
+        ///     <Development file="Config\Development.config"></Development>
+        ///     <QA>
+        ///	        <add key = "TestKey" value="QAValue"/>
+        ///	        <add key = "connection" value="MovieDBContextQA"/>
+        ///     </QA>
+        /// </EnvironmentSettings>
+        /// <appSettings>
+        ///     <add key = "CurrentEnvironment" value="Development"/>
+        ///     <add key = "CommonKey" value="CommonValue"/>
+        /// </appSettings>
+        /// </configuration>
+        /// ]]>
+        /// </code>
+        /// </example>
         private const string EnvironmentSectionGroupName = "EnvironmentSettings";
 
         /// <summary>
@@ -30,20 +73,18 @@ namespace SecureEnvironmentSettings
         #region EncryptDecrypt
 
         /// <summary>
-        /// Encrypt the connection string and secureSections
+        /// Encrypt the connection string and secureSections, you need to run this method for the very first time to ensure your config files will be encrypted
         /// </summary>
-        /// <example language="xml">
-        /// <code>
-        /// <configSections>
-        ///     <section name = "secureConfig" type="System.Configuration.AppSettingsSection"/>
-        /// </configSections>
-        /// 
-        /// <Production>
-        ///     <add key="url" value="https://femsa.csod.com"/>
-        /// </Production>
-        /// 
+        /// <example>
+        /// <code language="cs">
+        /// SecureEnvironmentSettings.Encrypt();
         /// </code>
-        /// </example>   
+        /// </example>
+        /// <note type="caution">
+        ///     Once the file is encrypted you can not be able to read it again until you decrypt your file again, 
+        ///     since the file is encrypted using a specific value from the machine that run the encrypt method, 
+        ///     you can not share your config file encrypted
+        /// </note>
         public static void Encrypt()
         {
             try
@@ -75,8 +116,16 @@ namespace SecureEnvironmentSettings
         }
 
         /// <summary>
-        /// Decrypt the config file
+        /// Decrypt the config files
         /// </summary>
+        /// <example>
+        /// <code language="cs">
+        /// SecureEnvironmentSettings.Decrypt();
+        /// </code>
+        /// </example>
+        /// <note type="tip">
+        /// You can use this method to decrypt your file, once the files are unencrypted you would be able to share your file betwen machines
+        /// </note>
         public static void Decrypt()
         {
             try
@@ -106,6 +155,17 @@ namespace SecureEnvironmentSettings
             }
         }
 
+        /// <summary>
+        /// Check if your current environment sections and connectionString are encrypted
+        /// </summary>
+        /// <returns>True if any secureSections or connectionStrings are encrypted</returns>
+        /// <example>
+        /// <code language="cs">
+        ///     bool isEncrypted = SecureEnvironmentSettings.IsEncrypted();
+        ///     if (isEncrypted)
+        ///         Console.WriteLine("The config sections are encrypted");
+        /// </code>
+        /// </example>
         public static bool IsEncrypted()
         {
 
@@ -132,10 +192,11 @@ namespace SecureEnvironmentSettings
         }
 
         /// <summary>
-        /// Update config values
+        /// Update config values directly on your current environment section
         /// </summary>
         /// <param name="key">key</param>
         /// <param name="value">value</param>
+        ///TODO: Add a seccond method to update based on the environment
         public static void UpdateConfiguracion(string key, string value)
         {
             try
@@ -176,13 +237,16 @@ namespace SecureEnvironmentSettings
         #region EnvironmentVariables
 
         /// <summary>
-        /// current working environemtn
+        /// Get the current environment value
         /// </summary>
         /// <example language="xml">
         /// <code>
         /// <appSettings>
         ///     <add key="CurrentEnvironment" value="Development" />
         /// </appSettings>
+        /// </code>
+        /// <code language="cs">
+        /// string currentEnv = SecureEnvironmentSettings.CurrentEnvironent;
         /// </code>
         /// </example>   
         public static string CurrentEnvironent
@@ -196,6 +260,12 @@ namespace SecureEnvironmentSettings
         /// <summary>
         /// Get access to all environmentSettings according to <seealso cref="CurrentEnvironent"/>
         /// </summary>
+        /// <example>
+        /// <code language="cs">
+        ///     string expected = "DevelopmentValue";
+        ///     string wanted = SecureEnvironmentSettings.Settings["TestKey"].Value;
+        /// </code>
+        /// </example>
         public static KeyValueConfigurationCollection Settings
         {
             get
@@ -226,10 +296,45 @@ namespace SecureEnvironmentSettings
         #region ConnectionStrings
 
         /// <summary>
-        /// Get the connection String from de encrypted file
+        /// Get the connection String from de encrypted file based on your environment settings
         /// </summary>
         /// <param name="name">Connection string Name</param>
         /// <returns>Decrypted connection String</returns>
+        /// <summary>
+        /// Environment settings section Name label.
+        /// You can set your config parameters based on your environment and keep it secure, when you need to change all your parameters, 
+        /// you can change a configuration environment , CurrentEnvironment
+        /// The following example show how you need to setup your main app config file, also how to split on different files
+        /// <example>
+        /// <codelanguage="xml" title="app.config">
+        /// <![CDATA[
+        /// <?xml version = "1.0" encoding="utf-8" ?>
+        /// <configuration>
+        /// <configSections>
+        ///     <sectionGroup name = "EnvironmentSettings" type="System.Configuration.ApplicationSettingsGroup">
+        ///	        <section name = "QA" type="System.Configuration.AppSettingsSection"/>
+        ///     </sectionGroup>
+        /// </configSections>
+        /// <connectionStrings>
+        ///    <add name = "MovieDBContextQA"
+        ///     connectionString="Data Source=(LocalDb)\MSSQLLocalDB;Initial Catalog=aspnet-MvcMovie;Integrated Security=SSPI;AttachDBFilename=|DataDirectory|\MoviesQA.mdf"
+        ///     providerName="System.Data.SqlClient">
+        /// </connectionStrings>
+        /// <EnvironmentSettings>
+        ///     <QA>
+        ///	        <add key = "connection" value="MovieDBContextQA"/>
+        ///     </QA>
+        /// </EnvironmentSettings>
+        /// <appSettings>
+        ///     <add key = "CurrentEnvironment" value="QA"/>
+        /// </appSettings>
+        /// </configuration>
+        /// ]]>
+        /// </code>
+        /// <code language="cs">
+        /// string connection = SecureEnvironmentSettings.GetConnectionString("MovieDBContextQA");
+        /// </code>
+        /// </example>
         public static string GetConnectionString(string name)
         {
             if (string.IsNullOrEmpty(name))
@@ -262,6 +367,43 @@ namespace SecureEnvironmentSettings
         /// <param name="name">Name of the connection string</param>
         /// <param name="Environment">Specific Environment</param>
         /// <returns>Connection String</returns>
+        /// <example>
+        /// <codelanguage="xml" title="app.config">
+        /// <![CDATA[
+        /// <?xml version = "1.0" encoding="utf-8" ?>
+        /// <configuration>
+        /// <configSections>
+        ///     <sectionGroup name = "EnvironmentSettings" type="System.Configuration.ApplicationSettingsGroup">
+        ///	        <section name = "Development" type="System.Configuration.AppSettingsSection"/>
+        ///	        <section name = "QA" type="System.Configuration.AppSettingsSection"/>
+        ///     </sectionGroup>
+        /// </configSections>
+        /// <connectionStrings>
+        ///     <add name = "MovieDBContextDev"
+        ///     connectionString="Data Source=(LocalDb)\MSSQLLocalDB;Initial Catalog=aspnet-MvcMovie;Integrated Security=SSPI;AttachDBFilename=|DataDirectory|\MoviesDev.mdf"
+        ///     providerName="System.Data.SqlClient">
+        ///    <add name = "MovieDBContextQA"
+        ///     connectionString="Data Source=(LocalDb)\MSSQLLocalDB;Initial Catalog=aspnet-MvcMovie;Integrated Security=SSPI;AttachDBFilename=|DataDirectory|\MoviesQA.mdf"
+        ///     providerName="System.Data.SqlClient">
+        /// </connectionStrings>
+        /// <EnvironmentSettings>
+        ///     <Development>
+        ///	        <add key = "connection" value="MovieDBContextQA"/>
+        ///     </Development>
+        ///     <QA>
+        ///	        <add key = "connection" value="MovieDBContextQA"/>
+        ///     </QA>
+        /// </EnvironmentSettings>
+        /// <appSettings>
+        ///     <add key = "CurrentEnvironment" value="QA"/>
+        /// </appSettings>
+        /// </configuration>
+        /// ]]>
+        /// </code>
+        /// <code language="cs">
+        ///     string environment = SecureEnvironmentSettings.GetConnectionStringByEnvironment("connection", "Development").ConnectionString;
+        /// </code>
+        /// </example>
         public static ConnectionStringSettings GetConnectionStringByEnvironment(string name, string Environment)
         {
             if (string.IsNullOrEmpty(Environment))
@@ -283,10 +425,16 @@ namespace SecureEnvironmentSettings
         #region Keys
 
         /// <summary>
-        /// Get a Shared Key environment value
+        /// Get a Shared Key environment value from a shared Key
         /// </summary>
         /// <param name="Key">Key to find</param>
         /// <returns>The value from that environment</returns>
+        /// <example>
+        /// <code language="cs">
+        ///     string expected = "CommonValue";
+        ///     string wanted = SecureEnvironmentSettings.GetSharedKey("CommonKey");
+        /// </code>
+        /// </example>
         public static string GetSharedKey(string Key)
         {
             return ConfigurationManager.AppSettings[Key].ToString();
