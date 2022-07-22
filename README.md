@@ -1,22 +1,33 @@
 # SecureEnvironmentSettings
-## keep your environment settings secure, encrypted and isolated
+## keep your environment settings secure, encrypted :closed_lock_with_key: and isolated
 
 This library helps you to keep your config files secure because once you call the **Encrypt** method the config sections and connections strings will be encrypted using a specific value from the machine (or devices) running your code.
 
+![settings](https://user-images.githubusercontent.com/74436244/180286333-538f96fd-ffbf-443a-b6c4-f0e96e3f6baf.png)
+
 ## Features
-- Encrypt ConfigSections and ConnectionStrings inside your config files
-- Decrypt config sections and connectionStrings
-- Update configuration values directly on your config file and encrypt
-- Get secure access to all your parameters based on your environments
-- Get easy access to shared settings values
+- :closed_lock_with_key: Encrypt ConfigSections and ConnectionStrings inside your config files
+- :unlock: Decrypt config sections and connectionStrings
+- :pencil2: Update configuration values directly on your config file and encrypt
+- :open_file_folder: Get secure access to all your parameters based on your environments
+- :open_file_folder: Get easy access to shared settings values
 
 ## How to install
 
 First of all you need to download the latest version of the library, once you have downloaded you should save into a specif folder and include in your project, finally you need to import in to your dependency
 
-![settings](https://user-images.githubusercontent.com/74436244/180286333-538f96fd-ffbf-443a-b6c4-f0e96e3f6baf.png)
+#### 1.- Download and save in your local files
+#### 2.- Add reference to this library
+In references righ-click and then browse for your library
+#
+![image](https://user-images.githubusercontent.com/74436244/180444679-50a9783b-9f86-44e3-95c5-d15fa29750d9.png)
+#### 3.- Use it as you need
 
-### App.config
+## How to use
+
+First, you need to config your main app.config in order to add the configSections, you should have at leas your file like thise example
+
+### :memo: App.config
 
 This is an example of how you can set up your main app.config or web.config
 
@@ -65,7 +76,7 @@ There are specific key sections than you can change in order to get your specifi
   <p>
     
 ### ConfigSections
-This is the main configuration that you need to add in your main config file, you can name your sections name as you wish, **but the sectionGroup name must be _EnvironmentSettings_ , so it can not be change**
+This is the main configuration that you need to add in your main config file, you can name your sections name as you wish, **but the sectionGroup name must be _EnvironmentSettings_ , :warning: so it can not be change**
 
 ```xml
 <configSections>
@@ -88,7 +99,7 @@ This is the main configuration that you need to add in your main config file, yo
 This sections are used to specify your custom parameters based on your environment, so when you call one of these values from your code, the environmentSettings engine
  tries to load the specific value based on the **CurrentEnvironment** parameter on your appSettings
     
-#### app.config
+#### :memo: app.config
 
 Inside any of your environmentSections you can add your parameters directly as a KeyValue like Development or QA section.
   
@@ -106,7 +117,7 @@ Inside any of your environmentSections you can add your parameters directly as a
 </EnvironmentSettings>
 ```
   
-#### Config\Production.config
+#### :memo: Config\Production.config
 You can also use an external file in order to keep your config files isolated like Production section [^1].
   
 ```xml
