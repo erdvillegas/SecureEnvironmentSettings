@@ -2,6 +2,10 @@
 using System.Configuration;
 using System.Linq;
 
+///<summary>
+///This library helps you to keep your config files secure because once you call the Encrypt method the config sections and connections strings will be encrypted 
+///using a specific value from the machine (or devices) running your code.
+///</summary>
 namespace SecureEnvironmentSettings
 {
     /// <summary>
@@ -195,6 +199,7 @@ namespace SecureEnvironmentSettings
         /// </summary>
         /// <param name="key">key</param>
         /// <param name="value">value</param>
+        /// <param name="environment">Environment to save your configuration value</param>
         public static void UpdateConfiguracion(string key, string value, string environment)
         {
             try
@@ -304,13 +309,8 @@ namespace SecureEnvironmentSettings
         /// </summary>
         /// <param name="name">Connection string Name</param>
         /// <returns>Decrypted connection String</returns>
-        /// <summary>
-        /// Environment settings section Name label.
-        /// You can set your config parameters based on your environment and keep it secure, when you need to change all your parameters, 
-        /// you can change a configuration environment , CurrentEnvironment
-        /// The following example show how you need to setup your main app config file, also how to split on different files
         /// <example>
-        /// <codelanguage="xml" title="app.config">
+        /// <code language="xml" title="app.config">
         /// <![CDATA[
         /// <?xml version = "1.0" encoding="utf-8" ?>
         /// <configuration>
@@ -372,7 +372,7 @@ namespace SecureEnvironmentSettings
         /// <param name="Environment">Specific Environment</param>
         /// <returns>Connection String</returns>
         /// <example>
-        /// <codelanguage="xml" title="app.config">
+        /// <code language="xml" title="app.config">
         /// <![CDATA[
         /// <?xml version = "1.0" encoding="utf-8" ?>
         /// <configuration>
