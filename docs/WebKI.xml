@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<HelpKI>
+  <HelpKINode Title="CurrentEnvironent property" Url="html/104bf110-d937-9de9-d89c-491955dd211f.htm" />
+  <HelpKINode Title="Decrypt method" Url="html/429617ac-5022-6b7e-a93a-a77df149acad.htm" />
+  <HelpKINode Title="Encrypt method" Url="html/7c650312-da88-446d-56f7-a77d9614783f.htm" />
+  <HelpKINode Title="GetConnectionString method" Url="html/32ed0aa6-d24e-750a-42de-fc14b6111b4b.htm" />
+  <HelpKINode Title="GetConnectionStringByEnvironment method" Url="html/8a99a311-6360-8e01-b55b-ae4e44b9e251.htm" />
+  <HelpKINode Title="GetKeyByEnvironment method" Url="html/a7193f51-fe7e-89aa-00af-f610b1c54260.htm" />
+  <HelpKINode Title="GetSharedKey method" Url="html/61d5e4aa-f23d-5917-bb4d-eb54390a9a5d.htm" />
+  <HelpKINode Title="IsEncrypted method" Url="html/779f2efc-6a8b-4c84-dc95-19c7c6372354.htm" />
+  <HelpKINode Title="SecureEnvironmentSettings class">
+    <HelpKINode Title="SecureEnvironmentSettings Class" Url="html/6ef508c1-b9b2-7706-3248-7f7b0a4b4cb8.htm" />
+    <HelpKINode Title="methods" Url="html/74a13188-c446-3f58-40cf-189578bc4cd2.htm" />
+    <HelpKINode Title="properties" Url="html/777c50e3-3d82-a540-4dc4-8307c83be690.htm" />
+  </HelpKINode>
+  <HelpKINode Title="SecureEnvironmentSettings namespace" Url="html/7218f2dd-cfef-4b18-413c-fdbedc025f1e.htm" />
+  <HelpKINode Title="SecureEnvironmentSettings.CurrentEnvironent property" Url="html/104bf110-d937-9de9-d89c-491955dd211f.htm" />
+  <HelpKINode Title="SecureEnvironmentSettings.Decrypt method" Url="html/429617ac-5022-6b7e-a93a-a77df149acad.htm" />
+  <HelpKINode Title="SecureEnvironmentSettings.Encrypt method" Url="html/7c650312-da88-446d-56f7-a77d9614783f.htm" />
+  <HelpKINode Title="SecureEnvironmentSettings.GetConnectionString method" Url="html/32ed0aa6-d24e-750a-42de-fc14b6111b4b.htm" />
+  <HelpKINode Title="SecureEnvironmentSettings.GetConnectionStringByEnvironment method" Url="html/8a99a311-6360-8e01-b55b-ae4e44b9e251.htm" />
+  <HelpKINode Title="SecureEnvironmentSettings.GetKeyByEnvironment method" Url="html/a7193f51-fe7e-89aa-00af-f610b1c54260.htm" />
+  <HelpKINode Title="SecureEnvironmentSettings.GetSharedKey method" Url="html/61d5e4aa-f23d-5917-bb4d-eb54390a9a5d.htm" />
+  <HelpKINode Title="SecureEnvironmentSettings.IsEncrypted method" Url="html/779f2efc-6a8b-4c84-dc95-19c7c6372354.htm" />
+  <HelpKINode Title="SecureEnvironmentSettings.SecureEnvironmentSettings class" Url="html/6ef508c1-b9b2-7706-3248-7f7b0a4b4cb8.htm" />
+  <HelpKINode Title="SecureEnvironmentSettings.Settings property" Url="html/927941b6-0f13-2943-9938-7661d57c8ea0.htm" />
+  <HelpKINode Title="SecureEnvironmentSettings.UpdateConfiguracion method" Url="html/6aa45fac-3c67-2b0b-e14f-f97a41431808.htm" />
+  <HelpKINode Title="Settings property" Url="html/927941b6-0f13-2943-9938-7661d57c8ea0.htm" />
+  <HelpKINode Title="UpdateConfiguracion method" Url="html/6aa45fac-3c67-2b0b-e14f-f97a41431808.htm" />
+</HelpKI>

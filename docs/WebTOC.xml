@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<HelpTOC>
+
+  <HelpTOCNode Id="15724643-de78-4f05-a1da-d8c245622328" Title="SecureEnvironmentSettings" Url="html/7218f2dd-cfef-4b18-413c-fdbedc025f1e.htm">
+    <HelpTOCNode Id="9de7a503-f6c9-4318-9371-03dd08394ded" Title="SecureEnvironmentSettings Class" Url="html/6ef508c1-b9b2-7706-3248-7f7b0a4b4cb8.htm">
+      <HelpTOCNode Id="b88b8ced-8edb-4061-98db-066f8b54f305" Title="SecureEnvironmentSettings Properties" Url="html/777c50e3-3d82-a540-4dc4-8307c83be690.htm">
+        <HelpTOCNode Title="CurrentEnvironent Property " Url="html/104bf110-d937-9de9-d89c-491955dd211f.htm" />
+        <HelpTOCNode Title="Settings Property " Url="html/927941b6-0f13-2943-9938-7661d57c8ea0.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="4a14775e-79d8-4a83-aed2-ae2186b5116e" Title="SecureEnvironmentSettings Methods" Url="html/74a13188-c446-3f58-40cf-189578bc4cd2.htm">
+        <HelpTOCNode Title="Decrypt Method " Url="html/429617ac-5022-6b7e-a93a-a77df149acad.htm" />
+        <HelpTOCNode Title="Encrypt Method " Url="html/7c650312-da88-446d-56f7-a77d9614783f.htm" />
+        <HelpTOCNode Title="GetConnectionString Method " Url="html/32ed0aa6-d24e-750a-42de-fc14b6111b4b.htm" />
+        <HelpTOCNode Title="GetConnectionStringByEnvironment Method " Url="html/8a99a311-6360-8e01-b55b-ae4e44b9e251.htm" />
+        <HelpTOCNode Title="GetKeyByEnvironment Method " Url="html/a7193f51-fe7e-89aa-00af-f610b1c54260.htm" />
+        <HelpTOCNode Title="GetSharedKey Method " Url="html/61d5e4aa-f23d-5917-bb4d-eb54390a9a5d.htm" />
+        <HelpTOCNode Title="IsEncrypted Method " Url="html/779f2efc-6a8b-4c84-dc95-19c7c6372354.htm" />
+        <HelpTOCNode Title="UpdateConfiguracion Method " Url="html/6aa45fac-3c67-2b0b-e14f-f97a41431808.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+  </HelpTOCNode>
+</HelpTOC>
