@@ -3,6 +3,10 @@
 
 This library helps you to keep your config files secure because once you call the **Encrypt** method the config sections and connections strings will be encrypted using a specific value from the machine (or devices) running your code.
 
+### See all documentation references
+
+[Technical Information](https://erdvillegas.github.io/SecureEnvironmentSettings/).
+
 ![settings](https://user-images.githubusercontent.com/74436244/180286333-538f96fd-ffbf-443a-b6c4-f0e96e3f6baf.png)
 
 ## Features
